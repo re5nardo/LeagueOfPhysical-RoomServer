@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "body-parser": "^1.15.0",
+    "compression": "^1.7.4",
+    "console-stamp": "^0.2.9",
     "cookie-parser": "^1.4.0",
     "debug": "^2.2.0",
     "express": "^4.14.0",
     "morgan": "^1.7.0",
     "pug": "^2.0.0-beta6",
+    "redis": "^3.0.2",
+    "redlock": "^4.2.0",
     "serve-favicon": "^2.3.0"
   }
 }
