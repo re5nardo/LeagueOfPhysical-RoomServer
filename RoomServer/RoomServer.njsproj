@@ -38,6 +38,12 @@
     <Content Include="models\response\spawn_room_response.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="models\user_info.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="models\user_match_state.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="routes\healthcheck.js" />
     <Content Include="routes\index.js" />
     <Content Include="routes\room.js" />
