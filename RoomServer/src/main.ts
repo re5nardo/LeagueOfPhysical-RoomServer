@@ -13,6 +13,8 @@ import loader from '@loaders/index';
         const app = new App([new IndexRoute()]);
 
         app.listen();
+      
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
       } catch (error) {
           logger.error(`main error. error: ${error}`);
