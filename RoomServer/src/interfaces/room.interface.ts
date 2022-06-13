@@ -4,14 +4,14 @@ export enum RoomStatus {
     None = 0,
 }
 
-export class Room {
-    public id: string;
-    public matchType: MatchType;
-    public subGameId: string;
-    public mapId: string;
-    public targetRating: number;
-    public createdAt: number;
-    public exptectedPlayerList: string[];
-    //public matchmakingTicketList: string[];
-    public status: RoomStatus;
+export interface Room {
+    id: string;
+    matchId: string;
+    matchType: MatchType;
+    subGameId: string;
+    mapId: string;
+    targetRating: number;
+    createdAt: number;
+    exptectedPlayerList: string[];
+    status: RoomStatus;
 };
