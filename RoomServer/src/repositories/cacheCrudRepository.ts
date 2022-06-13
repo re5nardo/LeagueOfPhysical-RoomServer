@@ -1,4 +1,4 @@
-import { CrudRepository } from '@repositories/repository.interface';
+import { CrudRepository } from '@repositories/crudRepository.interface';
 import { CrudDao } from '@daos/dao.interface';
 
 interface Entity<ID> {

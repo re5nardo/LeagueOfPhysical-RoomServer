@@ -1,7 +1,7 @@
-import { CrudRepository } from '@repositories/repository.interface';
+import { CrudRepository } from '@repositories/crudRepository.interface';
 import { CrudDao } from '@daos/dao.interface';
 
-export class CrudRepositoryImpl<T, ID> implements CrudRepository<T, ID> {
+export class CrudRepositoryBase<T, ID> implements CrudRepository<T, ID> {
 
     private dao: CrudDao<T, ID>;
 

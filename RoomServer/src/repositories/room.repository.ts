@@ -1,8 +1,8 @@
 import { Room } from '@interfaces/room.interface';
-import { CrudRepositoryImpl } from '@repositories/crud.repository.impl';
+import { CrudRepositoryBase } from '@repositories/crudRepositoryBase';
 import { RoomDaoRedis } from '@daos/room.dao.redis';
 
-export class RoomRepository extends CrudRepositoryImpl<Room, string> {
+export class RoomRepository extends CrudRepositoryBase<Room, string> {
     constructor() {
         super(new RoomDaoRedis());
     }
