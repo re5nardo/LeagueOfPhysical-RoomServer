@@ -10,7 +10,7 @@ const roomSchema: Schema = new Schema({
     },
     matchId: String,
     matchType: {
-        type: String,
+        type: Number,
         enum: MatchType,
     },
     subGameId: String,
@@ -19,7 +19,7 @@ const roomSchema: Schema = new Schema({
     createdAt: Number,
     exptectedPlayerList: [String],
     status: {
-        type: String,
+        type: Number,
         enum: RoomStatus,
     },
 });
