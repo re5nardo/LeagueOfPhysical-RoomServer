@@ -2,7 +2,7 @@ import { Router } from 'express';
 import RoomController from '@controllers/room.controller';
 import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
-import { RoomCreateDto, RoomPatchDto, RoomUpdateDto } from '@dtos/room.dto';
+import { CreateRoomDto, UpdateRoomStatusDto } from '@dtos/room.dto';
 
 class RoomRoute implements Routes {
     public path = '/room';
@@ -14,13 +14,14 @@ class RoomRoute implements Routes {
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/instance`, validationMiddleware(RoomCreateDto, 'body'), this.roomController.createRoomInstance);
-        this.router.delete(`${this.path}/instance/:roomId`, this.roomController.terminateRoomInstance);
+        //#region status
+        this.router.put(`${this.path}/status`, validationMiddleware(UpdateRoomStatusDto, 'body'), this.roomController.updateRoomStatus);
+        //#endregion
 
-        this.router.post(`${this.path}`, validationMiddleware(RoomCreateDto, 'body'), this.roomController.createRoom);
-        this.router.put(`${this.path}`, validationMiddleware(RoomUpdateDto, 'body'), this.roomController.updateRoom);
-        this.router.patch(`${this.path}`, validationMiddleware(RoomPatchDto, 'body'), this.roomController.patchRoom);
-        this.router.put(`${this.path}/:roomId`, this.roomController.terminateRoom);
+        this.router.get(`${this.path}/all`, this.roomController.getAllRooms);
+        this.router.get(`${this.path}/:id`, this.roomController.getRoomById);
+        this.router.post(`${this.path}`, validationMiddleware(CreateRoomDto, 'body'), this.roomController.createRoom);
+        this.router.delete(`${this.path}/:id`, this.roomController.deleteRoom);
     }
 }
 

@@ -1,49 +1,54 @@
 import { NextFunction, Request, Response } from 'express';
+import { CreateRoomDto, UpdateRoomStatusDto } from '@dtos/room.dto';
 import RoomService from '@services/room.service';
 
 class RoomController {
     private roomService = new RoomService();
-    
-    public createRoomInstance = async (req: Request, res: Response, next: NextFunction) => {
+
+    public getAllRooms = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const roomCreateResponseDto = await this.roomService.createRoom(req.body);
-            // const findAllRoomsData: Room[] = await this.roomService.findAllRoom();
-            
-            res.status(200).json({ data: roomCreateResponseDto, message: 'findAll' }); //  BaseResponse?
+            const response = await this.roomService.findAllRooms();
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }
     };
 
-    public terminateRoomInstance = async (req: Request, res: Response, next: NextFunction) => {
+    public getRoomById = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await this.roomService.terminateRoom(req.body);
-            // const findAllRoomsData: Room[] = await this.roomService.findAllRoom();
-            
-            // res.status(200).json({ data: findAllRoomsData, message: 'findAll' }); //  BaseResponse?
-            res.status(200);
+            const roomId: string = req.params.id;
+            const response = await this.roomService.findRoomById(roomId);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }
     };
 
-    public updateRoom = async (req: Request, res: Response, next: NextFunction) => {
+    public createRoom = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const roomCreateResponseDto = await this.roomService.createRoom(req.body);
-            // const findAllRoomsData: Room[] = await this.roomService.findAllRoom();
-            
-            res.status(200).json({ data: roomCreateResponseDto, message: 'findAll' }); //  BaseResponse?
+            const createRoomDto: CreateRoomDto = req.body;
+            const response = await this.roomService.createRoom(createRoomDto);
+            res.status(201).json(response);
         } catch (error) {
             next(error);
         }
     };
 
-    public patchRoom = async (req: Request, res: Response, next: NextFunction) => {
+    public deleteRoom = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const roomCreateResponseDto = await this.roomService.createRoom(req.body);
-            // const findAllRoomsData: Room[] = await this.roomService.findAllRoom();
-            
-            res.status(200).json({ data: roomCreateResponseDto, message: 'findAll' }); //  BaseResponse?
+            const roomId: string = req.params.id;
+            const response = await this.roomService.deleteRoomById(roomId);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    public updateRoomStatus = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const updateRoomStatusDto: UpdateRoomStatusDto = req.body;
+            const response = await this.roomService.updateRoomStatus(updateRoomStatusDto);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }

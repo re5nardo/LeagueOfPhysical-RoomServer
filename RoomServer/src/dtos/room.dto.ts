@@ -1,9 +1,9 @@
-import { IsNumber, IsString, IsEnum, IsArray, IsOptional } from 'class-validator';
+import { IsNumber, IsString, IsEnum, IsArray } from 'class-validator';
 import { MatchType } from '@interfaces/match.interface';
-import { ResponseBase } from '@src/interfaces/responseBase.interface';
-import { Room } from '@interfaces/room.interface';
+import { ResponseBase } from '@interfaces/responseBase.interface';
+import { RoomStatus } from '@interfaces/room.interface';
 
-export class RoomCreateDto {
+export class CreateRoomDto {
     @IsEnum(MatchType)
     public matchType: MatchType;
 
@@ -20,61 +20,43 @@ export class RoomCreateDto {
     public exptectedPlayerList: string[];
 }
 
-export class RoomCreateResponseDto implements ResponseBase {
-    @IsNumber()
-    public code: number;
-
+export class UpdateRoomStatusDto {
     @IsString()
     public roomId: string;
 
-    @IsNumber()
+    @IsEnum(RoomStatus)
+    public status: RoomStatus;
+}
+
+export class RoomResponseDto {
+    public id: string;
+    public matchId: string;
+    public matchType: MatchType;
+    public subGameId: string;
+    public mapId: string;
+}
+
+export class CreateRoomResponseDto implements ResponseBase {
+    public code: number;
+    public roomId: string;
     public port: number;
 }
 
-export class RoomUpdateDto {
-    @IsEnum(MatchType)
-    public matchType: MatchType;
-
-    @IsString()
-    public subGameId: string;
-
-    @IsString()
-    public mapId: string;
-
-    @IsNumber()
-    public targetRating: number;
-
-    @IsArray()
-    public exptectedPlayerList: string[];
-
-    public toEntity(room: Room): Room {
-        room.matchType = this.matchType;
-        room.subGameId = this.subGameId;
-        room.mapId = this.mapId;
-        room.targetRating = this.targetRating;
-        room.exptectedPlayerList = this.exptectedPlayerList;
-        return room;
-    }
+export class GetRoomResponseDto implements ResponseBase {
+    public code: number;
+    public room?: RoomResponseDto;
 }
 
-export class RoomPatchDto {
-    @IsOptional()
-    @IsEnum(MatchType)
-    public matchType: MatchType;
+export class UpdateRoomResponseDto implements ResponseBase {
+    public code: number;
+    public room?: RoomResponseDto;
+}
 
-    @IsOptional()
-    @IsString()
-    public subGameId: string;
+export class GetAllRoomsResponseDto implements ResponseBase {
+    public code: number;
+    public rooms?: RoomResponseDto[];
+}
 
-    @IsOptional()
-    @IsString()
-    public mapId: string;
-
-    @IsOptional()
-    @IsNumber()
-    public targetRating: number;
-
-    @IsOptional()
-    @IsArray()
-    public exptectedPlayerList: string[];
+export class DeleteRoomResponseDto implements ResponseBase {
+    public code: number;
 }

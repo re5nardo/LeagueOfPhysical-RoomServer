@@ -1,21 +1,22 @@
 
-import { RoomCreateDto, RoomCreateResponseDto, RoomUpdateDto } from '@dtos/room.dto';
-import { v4 } from 'uuid';
 import * as portfinder from "portfinder";
-import { spawn, ChildProcess } from "child_process";
-import { isEmpty } from '@utils/util';
+import { spawn } from "child_process";
+import { v4 } from 'uuid';
+import {
+    CreateRoomDto, UpdateRoomStatusDto,
+    RoomResponseDto, CreateRoomResponseDto, GetRoomResponseDto, UpdateRoomResponseDto, DeleteRoomResponseDto, GetAllRoomsResponseDto
+} from '@dtos/room.dto';
 import { RoomRepository } from '@repositories/room.repository';
-import { HttpException } from '@exceptions/HttpException';
 import { Room } from '@interfaces/room.interface';
-
-const BIN_PATH = 'C:\\Users\\USER\\Desktop\\lop-server-window\\LeagueOfPhysical_Server.exe';
+import { ResponseCode } from '@interfaces/responseCode.interface';
+import { BIN_PATH } from '@config';
+import { RoomMapper } from "@mappers/room.mapper";
 
 class RoomService {
 
     private roomRepository = new RoomRepository();
-    private roomProcesses = new Map<string, ChildProcess>();
 
-    public async createRoom(roomCreateDto: RoomCreateDto): Promise<RoomCreateResponseDto> {
+    public async createRoomInstance(createRoomDto: CreateRoomDto): Promise<CreateRoomResponseDto> {
         try {
             const roomId = v4();
             const port = await portfinder.getPortPromise();
@@ -23,44 +24,28 @@ class RoomService {
                 roomId,
                 'TestMatch',
                 port.toString(),
-                roomCreateDto.matchType.toString(),
-                roomCreateDto.subGameId,
-                roomCreateDto.mapId
+                createRoomDto.matchType.toString(),
+                createRoomDto.subGameId,
+                createRoomDto.mapId
             ];
-    
-            const subprocess = spawn(BIN_PATH, args, {
+
+            const subprocess = spawn(String(BIN_PATH), args, {
                 detached: true,
                 stdio: 'ignore',
             });
 
-            console.log('create Room');
-            console.log(`spawnfile: ${subprocess.spawnfile}`);
+            subprocess.unref();
+
             subprocess.on('spawn', () => {
                 console.log('spawn on spawn');
-            });
-
-            subprocess.stdout?.on('data', (data) => {
-            console.log(`spawn stdout: ${data}`);
-            });
-
-            subprocess.stderr?.on('data', (data) => {
-                console.log(`spawn on error ${data}`);
             });
 
             subprocess.on('exit', (code, signal) => {
                 console.log(`spawn on exit code: ${code} signal: ${signal}`);
             });
 
-            subprocess.on('close', (code: number, args: any[])=> {
-                console.log(`spawn on close code: ${code} args: ${args}`);
-            });
-        
-            subprocess.unref();
-
-            this.roomProcesses.set(roomId, subprocess);
-
             return {
-                code: 200,
+                code: ResponseCode.SUCCESS,
                 roomId: roomId,
                 port: port
             };
@@ -69,27 +54,85 @@ class RoomService {
         }
     }
 
-    public async updateRoom(id: string, roomUpdateDto: RoomUpdateDto): Promise<Room> {
+    public async terminateRoomInstance(roomId: string): Promise<void> {
         try {
-            if (isEmpty(roomUpdateDto)) {
-                throw new HttpException(400, "You're not userData");
-            }
-
-            const room = await this.roomRepository.findById(id);
-            if (room) {
-                return await this.roomRepository.save(roomUpdateDto.toEntity(room));
-            } else {
-                throw new HttpException(400, "You're not roomData");
-            }
+            //const subprocess = this.roomProcesses.get(roomId);
+            //subprocess?.kill('SIGINT');
         } catch (error) {
             return Promise.reject(error);
         }
     }
 
-    public async terminateRoom(roomId: string): Promise<void> {
+    public async findAllRooms(): Promise<GetAllRoomsResponseDto> {
         try {
-            const subprocess = this.roomProcesses.get(roomId);
-            subprocess?.kill('SIGINT');
+            const rooms = await this.roomRepository.findAll() as Room[];
+            if (!rooms || rooms.length == 0) {
+                return {
+                    code: ResponseCode.SUCCESS
+                };
+            }
+            return {
+                code: ResponseCode.SUCCESS,
+                rooms: rooms.map(room => RoomMapper.toRoomResponseDto(room))
+            };
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    public async findRoomById(id: string): Promise<GetRoomResponseDto> {
+        try {
+            const room = await this.roomRepository.findById(id);
+            if (!room) {
+                return {
+                    code: ResponseCode.ROOM_NOT_EXIST
+                };
+            }
+            return {
+                code: ResponseCode.SUCCESS,
+                room: room
+            };
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    public async createRoom(createRoomDto: CreateRoomDto): Promise<CreateRoomResponseDto> {
+        try {
+            const response = await this.createRoomInstance(createRoomDto);
+            await this.roomRepository.save(RoomMapper.CreateRoomDto.toEntity(createRoomDto));
+            return response;
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    public async deleteRoomById(id: string): Promise<DeleteRoomResponseDto> {
+        try {
+            await this.terminateRoomInstance(id);
+            await this.roomRepository.deleteById(id);
+            return {
+                code: ResponseCode.SUCCESS
+            };
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    public async updateRoomStatus(updateRoomStatusDto: UpdateRoomStatusDto): Promise<UpdateRoomResponseDto> {
+        try {
+            const room = await this.roomRepository.findById(updateRoomStatusDto.roomId);
+            if (!room) {
+                return {
+                    code: ResponseCode.ROOM_NOT_EXIST
+                };
+            }
+
+            room.status = updateRoomStatusDto.status;
+            return {
+                code: ResponseCode.SUCCESS,
+                room: await this.roomRepository.save(room)
+            };
         } catch (error) {
             return Promise.reject(error);
         }
