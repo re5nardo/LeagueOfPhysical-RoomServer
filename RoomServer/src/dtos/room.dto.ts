@@ -34,12 +34,13 @@ export class RoomResponseDto {
     public matchType: MatchType;
     public subGameId: string;
     public mapId: string;
+    public ip: string;
+    public port: number;
 }
 
 export class CreateRoomResponseDto implements ResponseBase {
     public code: number;
-    public roomId: string;
-    public port: number;
+    public room?: RoomResponseDto;
 }
 
 export class GetRoomResponseDto implements ResponseBase {

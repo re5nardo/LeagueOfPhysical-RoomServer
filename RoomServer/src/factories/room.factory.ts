@@ -18,6 +18,8 @@ export class RoomFactory {
             createdAt: Date.now(),
             exptectedPlayerList: [],
             status: RoomStatus.None,
+            ip: '',
+            port: 0,
         };
     }
 }

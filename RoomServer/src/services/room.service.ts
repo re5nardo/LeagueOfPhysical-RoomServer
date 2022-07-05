@@ -16,18 +16,24 @@ class RoomService {
 
     private roomRepository = new RoomRepository();
 
-    public async createRoomInstance(createRoomDto: CreateRoomDto): Promise<CreateRoomResponseDto> {
+    public async createRoomInstance(createRoomDto: CreateRoomDto): Promise<Room> {
         try {
-            const roomId = v4();
-            const port = await portfinder.getPortPromise();
-            let args: string[] = [
-                roomId,
-                'TestMatch',
-                port.toString(),
-                createRoomDto.matchType.toString(),
-                createRoomDto.subGameId,
-                createRoomDto.mapId
+            const room = RoomMapper.CreateRoomDto.toEntity(createRoomDto);
+            room.ip = 'localhost',
+            room.port = await portfinder.getPortPromise();
+
+            const args: string[] = [
+                room.id,
+                room.matchId,
+                String(room.port),
+                String(room.matchType),
+                room.subGameId,
+                room.mapId
             ];
+
+            createRoomDto.exptectedPlayerList?.forEach(exptectedPlayer => {
+                args.push(exptectedPlayer);
+            });
 
             const subprocess = spawn(String(BIN_PATH), args, {
                 detached: true,
@@ -44,11 +50,7 @@ class RoomService {
                 console.log(`spawn on exit code: ${code} signal: ${signal}`);
             });
 
-            return {
-                code: ResponseCode.SUCCESS,
-                roomId: roomId,
-                port: port
-            };
+            return room;
         } catch (error) {
             return Promise.reject(error);
         }
@@ -99,9 +101,12 @@ class RoomService {
 
     public async createRoom(createRoomDto: CreateRoomDto): Promise<CreateRoomResponseDto> {
         try {
-            const response = await this.createRoomInstance(createRoomDto);
-            await this.roomRepository.save(RoomMapper.CreateRoomDto.toEntity(createRoomDto));
-            return response;
+            const room = await this.createRoomInstance(createRoomDto);
+            await this.roomRepository.save(room);
+            return {
+                code: ResponseCode.SUCCESS,
+                room: room
+            }
         } catch (error) {
             return Promise.reject(error);
         }

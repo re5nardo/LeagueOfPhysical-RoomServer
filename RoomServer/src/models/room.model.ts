@@ -22,6 +22,8 @@ const roomSchema: Schema = new Schema({
         type: Number,
         enum: RoomStatus,
     },
+    ip: String,
+    port: Number,
 });
 
 const roomModel = model<Room & Document>('Room', roomSchema);

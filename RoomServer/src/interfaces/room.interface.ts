@@ -18,4 +18,6 @@ export interface Room {
     createdAt: number;
     exptectedPlayerList: string[];
     status: RoomStatus;
+    ip: string;
+    port: number;
 };
