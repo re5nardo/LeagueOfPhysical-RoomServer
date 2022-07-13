@@ -14,7 +14,7 @@ import loader from '@loaders/index';
         const app = new App([new IndexRoute(), new RoomRoute()]);
 
         app.listen();
-      } catch (error) {
-          logger.error(`main error. error: ${error}`);
-      }
+    } catch (error) {
+        logger.error(`main error. error: ${error}`);
+    }
 })();
