@@ -53,6 +53,16 @@ class RoomController {
             next(error);
         }
     };
+
+    public heartbeat = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const roomId: string = req.params.id;
+            await this.roomService.heartbeat(roomId);
+            res.sendStatus(200);
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default RoomController;

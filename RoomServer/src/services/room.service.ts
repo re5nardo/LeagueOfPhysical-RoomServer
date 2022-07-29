@@ -142,6 +142,14 @@ class RoomService {
             return Promise.reject(error);
         }
     }
+
+    public async heartbeat(id: string): Promise<void> {
+        try {
+            await this.roomRepository.expire(id);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
 }
 
 export default RoomService;

@@ -18,6 +18,7 @@ class RoomRoute implements Routes {
         this.router.put(`${this.path}/status`, validationMiddleware(UpdateRoomStatusDto, 'body'), this.roomController.updateRoomStatus);
         //#endregion
 
+        this.router.put(`${this.path}/heartbeat/:id`, this.roomController.heartbeat);
         this.router.get(`${this.path}/all`, this.roomController.getAllRooms);
         this.router.get(`${this.path}/:id`, this.roomController.getRoomById);
         this.router.post(`${this.path}`, validationMiddleware(CreateRoomDto, 'body'), this.roomController.createRoom);
