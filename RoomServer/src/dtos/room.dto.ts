@@ -34,6 +34,7 @@ export class RoomResponseDto {
     public matchType: MatchType;
     public subGameId: string;
     public mapId: string;
+    public status: RoomStatus;
     public ip: string;
     public port: number;
 }

@@ -23,6 +23,7 @@ export class RoomMapper {
             matchType: room.matchType,
             subGameId: room.subGameId,
             mapId: room.mapId,
+            status: room.status,
             ip: room.ip,
             port: room.port,
         };
