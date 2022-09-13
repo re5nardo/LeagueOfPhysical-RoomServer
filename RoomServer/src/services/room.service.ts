@@ -11,14 +11,15 @@ import { Room } from '@interfaces/room.interface';
 import { ResponseCode } from '@interfaces/responseCode.interface';
 import { BIN_PATH } from '@config';
 import { RoomMapper } from "@mappers/room.mapper";
+import MatchService from "@services/match.service";
 
 class RoomService {
 
     private roomRepository = new RoomRepository();
+    private matchService = new MatchService();
 
-    public async createRoomInstance(createRoomDto: CreateRoomDto): Promise<Room> {
+    public async createRoomInstance(room: Room): Promise<Room> {
         try {
-            const room = RoomMapper.CreateRoomDto.toEntity(createRoomDto);
             room.ip = 'localhost',
             room.port = await portfinder.getPortPromise();
 
@@ -26,15 +27,8 @@ class RoomService {
                 room.id,
                 room.matchId,
                 String(room.port),
-                String(room.matchType),
-                room.subGameId,
-                room.mapId
             ];
-
-            createRoomDto.exptectedPlayerList?.forEach(exptectedPlayer => {
-                args.push(exptectedPlayer);
-            });
-
+            
             const subprocess = spawn(String(BIN_PATH), args, {
                 detached: true,
                 stdio: 'ignore',
@@ -101,11 +95,18 @@ class RoomService {
 
     public async createRoom(createRoomDto: CreateRoomDto): Promise<CreateRoomResponseDto> {
         try {
-            const room = await this.createRoomInstance(createRoomDto);
-            await this.roomRepository.save(room);
+            let createMatchResponseDto = await this.matchService.createMatch(createRoomDto);
+            if (createMatchResponseDto.match == undefined) {
+                throw new Error(`Fail to create match!`);
+            }
+
+            let room = RoomMapper.CreateRoomDto.toEntity(createRoomDto);
+            room.matchId = createMatchResponseDto.match.id;
+            room = await this.createRoomInstance(room);
+
             return {
                 code: ResponseCode.SUCCESS,
-                room: room
+                room: await this.roomRepository.save(room)
             }
         } catch (error) {
             return Promise.reject(error);

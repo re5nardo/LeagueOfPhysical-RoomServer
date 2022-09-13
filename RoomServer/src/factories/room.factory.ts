@@ -1,5 +1,4 @@
 import { Room, RoomStatus } from '@interfaces/room.interface';
-import { MatchType } from "@interfaces/match.interface";
 import { v4 } from 'uuid';
 
 export class RoomFactory {
@@ -11,12 +10,7 @@ export class RoomFactory {
         return {
             id: v4(),
             matchId: '',
-            matchType: MatchType.Friendly,
-            subGameId: '',
-            mapId: '',
-            targetRating: 1000,
             createdAt: Date.now(),
-            exptectedPlayerList: [],
             status: RoomStatus.None,
             ip: '',
             port: 0,

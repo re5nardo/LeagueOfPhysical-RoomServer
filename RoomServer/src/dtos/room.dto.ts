@@ -31,9 +31,6 @@ export class UpdateRoomStatusDto {
 export class RoomResponseDto {
     public id: string;
     public matchId: string;
-    public matchType: MatchType;
-    public subGameId: string;
-    public mapId: string;
     public status: RoomStatus;
     public ip: string;
     public port: number;

@@ -1,6 +1,7 @@
 import App from '@src/app';
 import IndexRoute from '@routes/index.route';
 import RoomRoute from '@routes/room.route';
+import MatchRoute from '@routes/match.route';
 import validateEnv from '@utils/validateEnv';
 import { logger } from '@utils/logger';
 import loader from '@loaders/index';
@@ -11,7 +12,7 @@ import loader from '@loaders/index';
 
         await loader();
 
-        const app = new App([new IndexRoute(), new RoomRoute()]);
+        const app = new App([new IndexRoute(), new RoomRoute(), new MatchRoute()]);
 
         app.listen();
     } catch (error) {

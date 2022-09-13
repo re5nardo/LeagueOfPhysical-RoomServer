@@ -6,11 +6,6 @@ export class RoomMapper {
     static CreateRoomDto = class {
         public static toEntity(createRoomDto: CreateRoomDto): Room {
             return RoomFactory.create({
-                matchType: createRoomDto.matchType,
-                subGameId: createRoomDto.subGameId,
-                mapId: createRoomDto.mapId,
-                targetRating: createRoomDto.targetRating,
-                exptectedPlayerList: createRoomDto.exptectedPlayerList,
                 status: RoomStatus.Spawning
             });
         }
@@ -20,14 +15,9 @@ export class RoomMapper {
         return {
             id: room.id,
             matchId: room.matchId,
-            matchType: room.matchType,
-            subGameId: room.subGameId,
-            mapId: room.mapId,
             status: room.status,
             ip: room.ip,
             port: room.port,
         };
     }
-
-    // public static toPersistence (t: T): any;
 }
