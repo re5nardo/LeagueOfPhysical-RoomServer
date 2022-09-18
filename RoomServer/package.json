@@ -13,6 +13,7 @@
         "buildNstart": "npm run build && npm run start"
     },
     "dependencies": {
+        "axios": "^0.26.1",
         "class-transformer": "^0.4.0",
         "class-validator": "^0.13.1",
         "compression": "^1.7.4",
