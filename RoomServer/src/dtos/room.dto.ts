@@ -46,7 +46,7 @@ export class GetRoomResponseDto implements ResponseBase {
     public room?: RoomResponseDto;
 }
 
-export class UpdateRoomResponseDto implements ResponseBase {
+export class UpdateRoomStatusResponseDto implements ResponseBase {
     public code: number;
     public room?: RoomResponseDto;
 }

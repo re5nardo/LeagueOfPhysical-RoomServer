@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 import { v4 } from 'uuid';
 import {
     CreateRoomDto, UpdateRoomStatusDto,
-    RoomResponseDto, CreateRoomResponseDto, GetRoomResponseDto, UpdateRoomResponseDto, DeleteRoomResponseDto, GetAllRoomsResponseDto
+    RoomResponseDto, CreateRoomResponseDto, GetRoomResponseDto, UpdateRoomStatusResponseDto, DeleteRoomResponseDto, GetAllRoomsResponseDto
 } from '@dtos/room.dto';
 import { RoomRepository } from '@repositories/room.repository';
 import { Room } from '@interfaces/room.interface';
@@ -125,7 +125,7 @@ class RoomService {
         }
     }
 
-    public async updateRoomStatus(updateRoomStatusDto: UpdateRoomStatusDto): Promise<UpdateRoomResponseDto> {
+    public async updateRoomStatus(updateRoomStatusDto: UpdateRoomStatusDto): Promise<UpdateRoomStatusResponseDto> {
         try {
             const room = await this.roomRepository.findById(updateRoomStatusDto.roomId);
             if (!room) {
