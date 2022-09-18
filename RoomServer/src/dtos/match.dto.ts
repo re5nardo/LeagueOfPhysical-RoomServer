@@ -19,14 +19,6 @@ export class CreateMatchDto {
     public exptectedPlayerList: string[];
 }
 
-export class UpdateMatchStatusDto {
-    @IsString()
-    public matchId: string;
-
-    @IsEnum(MatchStatus)
-    public status: MatchStatus;
-}
-
 export class MatchStartDto {
     @IsString()
     public matchId: string;
@@ -52,11 +44,6 @@ export class CreateMatchResponseDto implements ResponseBase {
 }
 
 export class GetMatchResponseDto implements ResponseBase {
-    public code: number;
-    public match?: MatchResponseDto;
-}
-
-export class UpdateMatchResponseDto implements ResponseBase {
     public code: number;
     public match?: MatchResponseDto;
 }

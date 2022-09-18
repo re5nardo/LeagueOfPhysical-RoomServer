@@ -11,7 +11,6 @@ export class MatchMapper {
                 mapId: createMatchDto.mapId,
                 targetRating: createMatchDto.targetRating,
                 playerList: createMatchDto.exptectedPlayerList,
-                status: MatchStatus.Spawning
             });
         }
     };

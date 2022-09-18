@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { UpdateMatchStatusDto, MatchStartDto, MatchEndDto } from '@dtos/match.dto';
+import { MatchStartDto, MatchEndDto } from '@dtos/match.dto';
 import MatchService from '@services/match.service';
 
 class MatchController {
@@ -9,16 +9,6 @@ class MatchController {
         try {
             const matchId: string = req.params.id;
             const response = await this.matchService.findMatchById(matchId);
-            res.status(200).json(response);
-        } catch (error) {
-            next(error);
-        }
-    };
-    
-    public updateMatchStatus = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const updateMatchStatusDto: UpdateMatchStatusDto = req.body;
-            const response = await this.matchService.updateMatchStatus(updateMatchStatusDto);
             res.status(200).json(response);
         } catch (error) {
             next(error);

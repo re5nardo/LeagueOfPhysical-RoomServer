@@ -6,11 +6,8 @@ export enum MatchType {
 
 export enum MatchStatus {
     None = 0,
-    Spawning = 1,
-    Spawned = 2,
-    Ready = 3,
-    Playing = 4,
-    Finished = 5,
+    MatchStart = 1,
+    MatchEnd = 2,
 }
 
 export interface Match {
