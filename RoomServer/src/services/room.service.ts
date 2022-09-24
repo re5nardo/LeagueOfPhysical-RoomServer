@@ -12,6 +12,7 @@ import { ResponseCode } from '@interfaces/responseCode.interface';
 import { BIN_PATH } from '@config';
 import { RoomMapper } from "@mappers/room.mapper";
 import MatchService from "@services/match.service";
+import { getPublicIP } from "@utils/util";
 
 class RoomService {
 
@@ -20,7 +21,7 @@ class RoomService {
 
     public async createRoomInstance(room: Room): Promise<Room> {
         try {
-            room.ip = 'localhost',
+            room.ip = await getPublicIP(),
             room.port = await portfinder.getPortPromise();
 
             const args: string[] = [

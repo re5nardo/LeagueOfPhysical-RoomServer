@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -15,5 +17,15 @@ export const isEmpty = (value: string | number | object): boolean => {
         return true;
     } else {
         return false;
+    }
+};
+
+export async function getPublicIP(): Promise<string> {
+    try {
+        const url = `https://api.ipify.org?format=json`;
+        const response = await axios.get(url);
+        return response.data.ip;
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
