@@ -18,7 +18,7 @@ COPY . .
 
 RUN npm run build
 
-RUN sudo chmod 755 /usr/src/room-server/server_binary/lop-server.x86_64
+RUN chmod -R 755 /usr/src/room-server/server_binary/lop-server.x86_64
 
 EXPOSE 2000
 CMD [ "node", "dist/main.js" ]
