@@ -22,7 +22,8 @@ export const isEmpty = (value: string | number | object): boolean => {
 
 export async function getPublicIP(): Promise<string> {
     try {
-        const url = `https://api.ipify.org?format=json`;
+        // const url = `https://api.ipify.org?format=json`;
+        const url = `https://ifconfig.co/json`;
         const response = await axios.get(url);
         return response.data.ip;
     } catch (error) {
