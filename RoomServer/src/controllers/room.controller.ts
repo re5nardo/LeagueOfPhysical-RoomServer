@@ -57,8 +57,8 @@ class RoomController {
     public heartbeat = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const roomId: string = req.params.id;
-            await this.roomService.heartbeat(roomId);
-            res.sendStatus(200);
+            const response = await this.roomService.heartbeat(roomId);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }

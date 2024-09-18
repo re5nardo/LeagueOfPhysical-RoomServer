@@ -15,6 +15,7 @@ const roomSchema: Schema = new Schema({
     },
     ip: String,
     port: Number,
+    lastHeartbeat: Number,
 });
 
 const roomModel = model<Room & Document>('Room', roomSchema);

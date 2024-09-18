@@ -13,6 +13,7 @@ import { BIN_PATH } from '@config';
 import { RoomMapper } from "@mappers/room.mapper";
 import MatchService from "@services/match.service";
 import { getPublicIP } from "@utils/util";
+import { ResponseBase } from "@interfaces/responseBase.interface";
 
 class RoomService {
 
@@ -145,9 +146,20 @@ class RoomService {
         }
     }
 
-    public async heartbeat(id: string): Promise<void> {
+    public async heartbeat(roomId: string): Promise<ResponseBase> {
         try {
-            await this.roomRepository.expire(id);
+            const room = await this.roomRepository.findById(roomId);
+            if (room) {
+                room.lastHeartbeat = Date.now();
+                await this.roomRepository.save(room);
+                return {
+                    code: ResponseCode.SUCCESS,
+                };
+            } else {
+                return {
+                    code: ResponseCode.ROOM_NOT_EXIST,
+                };
+            }
         } catch (error) {
             return Promise.reject(error);
         }

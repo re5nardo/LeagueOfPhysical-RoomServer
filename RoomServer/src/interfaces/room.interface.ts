@@ -33,4 +33,4 @@ export interface Room {
     ip: string;
     port: number;
     lastHeartbeat: number;
-};
+}

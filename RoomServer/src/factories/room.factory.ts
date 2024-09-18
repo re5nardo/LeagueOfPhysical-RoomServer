@@ -14,6 +14,7 @@ export class RoomFactory {
             status: RoomStatus.None,
             ip: '',
             port: 0,
+            lastHeartbeat: Date.now(),
         };
     }
 }
