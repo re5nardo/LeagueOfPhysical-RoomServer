@@ -13,6 +13,7 @@
         "buildNstart": "npm run build && npm run start"
     },
     "dependencies": {
+        "@kubernetes/client-node": "^0.21.0",
         "axios": "^0.26.1",
         "class-transformer": "^0.4.0",
         "class-validator": "^0.13.1",

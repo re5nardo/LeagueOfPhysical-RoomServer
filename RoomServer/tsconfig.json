@@ -31,6 +31,7 @@
             "@factories/*": ["src/factories/*"],
             "@mappers/*": ["src/mappers/*"],
             "@config": ["src/config"],
+            "@schedulers/*": ["src/schedulers/*"],
           }
     },
     "include": [
