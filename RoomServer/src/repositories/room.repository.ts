@@ -1,18 +1,10 @@
 import { Room } from '@interfaces/room.interface';
-import { CrudRepositoryBase } from '@repositories/crudRepositoryBase';
+import { CacheCrudRepository } from '@repositories/cacheCrudRepository';
+import { RoomDaoMongoose } from '@daos/room.dao.mongoose';
 import { RoomDaoRedis } from '@daos/room.dao.redis';
 
-export class RoomRepository extends CrudRepositoryBase<Room, string> {
+export class RoomRepository extends CacheCrudRepository<Room, string> {
     constructor() {
-        super(new RoomDaoRedis());
-    }
-
-    public async expire(id: string): Promise<boolean> {
-        try {
-            const roomDaoRedis = this.dao as RoomDaoRedis;
-            return await roomDaoRedis.expire(id);
-        } catch (error) {
-            return Promise.reject(error);
-        }
+        super(new RoomDaoMongoose(), new RoomDaoRedis());
     }
 }
