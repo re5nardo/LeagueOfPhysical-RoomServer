@@ -23,6 +23,7 @@ class RoomRoute implements Routes {
         this.router.get(`${this.path}/:id`, this.roomController.getRoomById);
         this.router.post(`${this.path}`, validationMiddleware(CreateRoomDto, 'body'), this.roomController.createRoom);
         this.router.delete(`${this.path}/:id`, this.roomController.deleteRoom);
+        this.router.get(`${this.path}/:id/joinable`, this.roomController.isRoomJoinable);
     }
 }
 

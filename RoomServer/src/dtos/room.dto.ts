@@ -47,3 +47,8 @@ export class GetAllRoomsResponseDto implements ResponseBase {
 export class DeleteRoomResponseDto implements ResponseBase {
     public code: number;
 }
+
+export class RoomJoinableResponseDto implements ResponseBase {
+    public code: number;
+    public status?: RoomStatus;
+}

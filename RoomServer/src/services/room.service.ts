@@ -1,6 +1,7 @@
 import {
     CreateRoomDto, UpdateRoomStatusDto, CreateRoomResponseDto, GetRoomResponseDto, UpdateRoomStatusResponseDto, DeleteRoomResponseDto, GetAllRoomsResponseDto
 } from '@dtos/room.dto';
+import { RoomJoinableResponseDto } from '@dtos/room.dto';
 import { ResponseBase } from '@interfaces/responseBase.interface'
 import { RoomRepository } from '@repositories/room.repository';
 import { Room, RoomStatus } from '@interfaces/room.interface';
@@ -50,18 +51,19 @@ class RoomService {
         }
     }
 
-    public async isRoomJoinable(id: string): Promise<ResponseBase> {
+    public async isRoomJoinable(id: string): Promise<RoomJoinableResponseDto> {
         try {
             const room = await this.roomRepository.findById(id);
             if (!room) {
                 return {
-                    code: ResponseCode.ROOM_NOT_EXIST
+                    code: ResponseCode.ROOM_NOT_EXIST,
                 };
             }
 
             if (room.status === RoomStatus.Closed || room.status === RoomStatus.Error) {
                 return {
-                    code: ResponseCode.ROOM_FINISHED
+                    code: ResponseCode.ROOM_NOT_JOINABLE,
+                    status: room.status,
                 };
             }
 
@@ -70,12 +72,20 @@ class RoomService {
                 await this.roomRepository.save(room)
 
                 return {
-                    code: ResponseCode.ROOM_FINISHED
+                    code: ResponseCode.ROOM_NOT_JOINABLE,
+                    status: room.status,
+                };
+            }
+
+            if (room.status === RoomStatus.WaitingForPlayers || room.status === RoomStatus.StartingGame || room.status === RoomStatus.GameInProgress) {
+                return {
+                    code: ResponseCode.SUCCESS,
                 };
             }
 
             return {
-                code: ResponseCode.SUCCESS,
+                code: ResponseCode.ROOM_NOT_JOINABLE,
+                status: room.status,
             };
         } catch (error) {
             return Promise.reject(error);
