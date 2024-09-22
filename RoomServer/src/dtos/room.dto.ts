@@ -1,5 +1,4 @@
 import { IsNumber, IsString, IsEnum, IsArray } from 'class-validator';
-import { MatchType } from '@interfaces/match.interface';
 import { ResponseBase } from '@interfaces/responseBase.interface';
 import { RoomStatus } from '@interfaces/room.interface';
 
@@ -50,5 +49,5 @@ export class DeleteRoomResponseDto implements ResponseBase {
 
 export class RoomJoinableResponseDto implements ResponseBase {
     public code: number;
-    public status?: RoomStatus;
+    public room?: RoomResponseDto;
 }

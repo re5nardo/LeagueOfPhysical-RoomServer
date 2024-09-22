@@ -2,12 +2,15 @@ import {
     CreateRoomDto, UpdateRoomStatusDto, CreateRoomResponseDto, GetRoomResponseDto, UpdateRoomStatusResponseDto, DeleteRoomResponseDto, GetAllRoomsResponseDto
 } from '@dtos/room.dto';
 import { RoomJoinableResponseDto } from '@dtos/room.dto';
+import { UserLocationDto, UpdateUserLocationDto } from '@dtos/user-location.dto';
 import { ResponseBase } from '@interfaces/responseBase.interface'
 import { RoomRepository } from '@repositories/room.repository';
 import { Room, RoomStatus } from '@interfaces/room.interface';
+import { Location, LocationDetail } from '@interfaces/user-location.interface';
 import { ResponseCode } from '@interfaces/responseCode.interface';
 import { RoomMapper } from "@mappers/room.mapper";
 import MatchService from "@services/match.service";
+import UserLocationService from '@services/user-location.service';
 import { k8sUtils } from '@utils/k8sUtils';
 
 class RoomService {
@@ -16,6 +19,7 @@ class RoomService {
 
     private roomRepository = new RoomRepository();
     private matchService = new MatchService();
+    private userLocationService = new UserLocationService();
 
     public async findAllRooms(): Promise<GetAllRoomsResponseDto> {
         try {
@@ -27,7 +31,7 @@ class RoomService {
             }
             return {
                 code: ResponseCode.SUCCESS,
-                rooms: rooms.map(room => RoomMapper.toRoomResponseDto(room))
+                rooms: rooms.map(room => RoomMapper.toRoomResponseDto(room)),
             };
         } catch (error) {
             return Promise.reject(error);
@@ -44,7 +48,7 @@ class RoomService {
             }
             return {
                 code: ResponseCode.SUCCESS,
-                room: room
+                room: RoomMapper.toRoomResponseDto(room),
             };
         } catch (error) {
             return Promise.reject(error);
@@ -63,7 +67,7 @@ class RoomService {
             if (room.status === RoomStatus.Closed || room.status === RoomStatus.Error) {
                 return {
                     code: ResponseCode.ROOM_NOT_JOINABLE,
-                    status: room.status,
+                    room: RoomMapper.toRoomResponseDto(room),
                 };
             }
 
@@ -73,19 +77,20 @@ class RoomService {
 
                 return {
                     code: ResponseCode.ROOM_NOT_JOINABLE,
-                    status: room.status,
+                    room: RoomMapper.toRoomResponseDto(room),
                 };
             }
 
             if (room.status === RoomStatus.WaitingForPlayers || room.status === RoomStatus.StartingGame || room.status === RoomStatus.GameInProgress) {
                 return {
                     code: ResponseCode.SUCCESS,
+                    room: RoomMapper.toRoomResponseDto(room),
                 };
             }
 
             return {
                 code: ResponseCode.ROOM_NOT_JOINABLE,
-                status: room.status,
+                room: RoomMapper.toRoomResponseDto(room),
             };
         } catch (error) {
             return Promise.reject(error);
@@ -103,14 +108,16 @@ class RoomService {
             
             //  room
             let room = RoomMapper.MatchResponseDto.toEntity(matchResponse.match);
-            await this.roomRepository.save(room)
+            await this.roomRepository.save(room);
 
             //  room-runner
             room = await this.createRoomRunner(room);
 
+            await this.roomRepository.save(room);
+
             return {
                 code: ResponseCode.SUCCESS,
-                room: await this.roomRepository.save(room)
+                room: RoomMapper.toRoomResponseDto(room),
             }
         } catch (error) {
             return Promise.reject(error);
@@ -224,11 +231,30 @@ class RoomService {
 
             if (room.status === RoomStatus.Closed || room.status === RoomStatus.Error) {
                 await this.deleteRoomRunnerById(room.id);
+
+                const getMatchResponseDto = await this.matchService.findMatchById(room.matchId);
+                if (!getMatchResponseDto.match) {
+                    console.warn(`getMatchResponseDto.match is undefined. Updating user-location is skipped.`);
+                } else {
+                    const updateUserLocationDto = new UpdateUserLocationDto();
+                    getMatchResponseDto.match.playerList.forEach(playerId => {
+                        const userLocationDto: UserLocationDto = {
+                            userId: playerId,
+                            location: Location.None,
+                            locationDetail: new LocationDetail(Location.None),
+                        };
+                        updateUserLocationDto.userLocations.push(userLocationDto);
+                    });
+    
+                    const updateUserLocationResponseDto = await this.userLocationService.updateUserLocation(updateUserLocationDto);
+                }
             }
+            
+            await this.roomRepository.save(room);
 
             return {
                 code: ResponseCode.SUCCESS,
-                room: await this.roomRepository.save(room)
+                room: RoomMapper.toRoomResponseDto(room),
             };
         } catch (error) {
             return Promise.reject(error);
