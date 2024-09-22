@@ -1,20 +1,18 @@
-
 import {
-    CreateMatchDto, MatchStartDto, MatchEndDto,
-    CreateMatchResponseDto, GetMatchResponseDto, MatchStartResponseDto, MatchEndResponseDto
+    CreateMatchDto, MatchStartDto, MatchEndDto, CreateMatchResponseDto, GetMatchResponseDto, MatchStartResponseDto, MatchEndResponseDto
 } from '@dtos/match.dto';
-import { UpdateUserLocationDto, UserLocationDto } from '@dtos/user.dto';
+import { UpdateUserLocationDto, UserLocationDto } from '@dtos/user-location.dto';
 import { MatchRepository } from '@repositories/match.repository';
 import { ResponseCode } from '@interfaces/responseCode.interface';
 import { MatchMapper } from "@mappers/match.mapper";
 import { MatchStatus } from '@interfaces/match.interface';
-import UserService from '@services/user.service';
-import { Location, LocationDetail } from '@interfaces/user.location.interface';
+import UserLocationService from '@services/user-location.service';
+import { Location, LocationDetail } from '@interfaces/user-location.interface';
 
 class MatchService {
 
     private matchRepository = new MatchRepository();
-    private userService = new UserService();
+    private userLocationService = new UserLocationService();
 
     public async findMatchById(id: string): Promise<GetMatchResponseDto> {
         try {
@@ -80,17 +78,17 @@ class MatchService {
 
             //  update user locations
             const updateUserLocationDto = new UpdateUserLocationDto();
-            const findAllUsersDto = await this.userService.findAllUsersById(match.playerList);
 
-            findAllUsersDto.users?.forEach(user => {
-                const userLocationDto = new UserLocationDto();
-                userLocationDto.userId = user.id,
-                    userLocationDto.location = Location.Unknown,
-                    userLocationDto.locationDetail = new LocationDetail(Location.Unknown);
+            match.playerList.forEach(playerId => {
+                const userLocationDto: UserLocationDto = {
+                    userId: playerId,
+                    location: Location.None,
+                    locationDetail: new LocationDetail(Location.None),
+                };
                 updateUserLocationDto.userLocations.push(userLocationDto);
             });
 
-            const response = await this.userService.updateUserLocation(updateUserLocationDto);
+            const response = await this.userLocationService.updateUserLocation(updateUserLocationDto);
 
             return {
                 code: ResponseCode.SUCCESS,
