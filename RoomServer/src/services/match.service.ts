@@ -24,7 +24,7 @@ class MatchService {
             }
             return {
                 code: ResponseCode.SUCCESS,
-                match: match
+                match: MatchMapper.toMatchResponseDto(match),
             };
         } catch (error) {
             return Promise.reject(error);
@@ -33,9 +33,12 @@ class MatchService {
 
     public async createMatch(createMatchDto: CreateMatchDto): Promise<CreateMatchResponseDto> {
         try {
+            const match = MatchMapper.CreateMatchDto.toEntity(createMatchDto);
+            await this.matchRepository.save(match);
+
             return {
                 code: ResponseCode.SUCCESS,
-                match: await this.matchRepository.save(MatchMapper.CreateMatchDto.toEntity(createMatchDto))
+                match: MatchMapper.toMatchResponseDto(match),
             }
         } catch (error) {
             return Promise.reject(error);
@@ -52,10 +55,12 @@ class MatchService {
             }
 
             match.status = MatchStatus.MatchStart;
+            
+            await this.matchRepository.save(match);
 
             return {
                 code: ResponseCode.SUCCESS,
-                match: await this.matchRepository.save(match)
+                match: MatchMapper.toMatchResponseDto(match),
             };
         } catch (error) {
             return Promise.reject(error);
@@ -90,9 +95,11 @@ class MatchService {
 
             const response = await this.userLocationService.updateUserLocation(updateUserLocationDto);
 
+            await this.matchRepository.save(match);
+
             return {
                 code: ResponseCode.SUCCESS,
-                match: await this.matchRepository.save(match)
+                match: MatchMapper.toMatchResponseDto(match),
             };
         } catch (error) {
             return Promise.reject(error);
