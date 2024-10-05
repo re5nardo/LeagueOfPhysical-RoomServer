@@ -7,3 +7,4 @@ export const { DB_HOST, DB_PORT, DB_DATABASE } = process.env;
 export const { CACHE_HOST, CACHE_PORT } = process.env;
 export const { BIN_PATH } = process.env;
 export const { LOBBY_SERVER_HOST, LOBBY_SERVER_PORT } = process.env;
+export const { MATCH_MAKING_SERVER_HOST, MATCH_MAKING_SERVER_PORT } = process.env;

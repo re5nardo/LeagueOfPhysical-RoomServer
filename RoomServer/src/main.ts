@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import App from '@src/app';
 import IndexRoute from '@routes/index.route';
 import RoomRoute from '@routes/room.route';
-import MatchRoute from '@routes/match.route';
 import validateEnv from '@utils/validateEnv';
 import { logger } from '@utils/logger';
 import loader from '@loaders/index';
@@ -16,7 +15,7 @@ import scheduler from '@schedulers/index';
         
         scheduler();
 
-        const app = new App([new IndexRoute(), new RoomRoute(), new MatchRoute()]);
+        const app = new App([new IndexRoute(), new RoomRoute()]);
 
         app.listen();
         

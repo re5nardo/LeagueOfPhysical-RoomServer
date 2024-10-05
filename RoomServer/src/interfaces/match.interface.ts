@@ -4,12 +4,6 @@ export enum MatchType {
     Rank = 1,
 }
 
-export enum MatchStatus {
-    None = 0,
-    MatchStart = 1,
-    MatchEnd = 2,
-}
-
 export interface Match {
     id: string;
     matchType: MatchType;
@@ -18,5 +12,4 @@ export interface Match {
     targetRating: number;
     createdAt: number;
     playerList: string[];
-    status: MatchStatus;
 };
