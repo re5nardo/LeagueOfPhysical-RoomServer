@@ -149,9 +149,7 @@ class RoomService {
                         ports: [{ containerPort: 7777, protocol: 'UDP' }],
                         env: [
                             { name: 'ROOM_ID', value: room.id },
-                            { name: 'MATCH_ID', value: room.matchId },
                             { name: 'PORT', value: '7777' },
-                            // { name: 'PLAYERS', value: JSON.stringify(players) }
                         ],
                     }],
                     terminationGracePeriodSeconds: 30
