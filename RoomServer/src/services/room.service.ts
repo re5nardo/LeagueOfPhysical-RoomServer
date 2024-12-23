@@ -284,7 +284,7 @@ class RoomService {
 
             //  Pods
             const podList = await k8sUtils.listPods();
-            for (const pod of podList.items) {
+            for (const pod of podList.items ?? []) {
                 if (pod.metadata && pod.metadata.labels && pod.metadata.labels['roomId']) {
 
                     const roomId = pod.metadata.labels['roomId'];
@@ -300,7 +300,7 @@ class RoomService {
 
             //  Services
             const serviceList = await k8sUtils.listServices();
-            for (const service of serviceList.items) {
+            for (const service of serviceList.items ?? []) {
                 if (service.metadata && service.metadata.labels && service.metadata.labels['roomId']) {
 
                     const roomId = service.metadata.labels['roomId'];
