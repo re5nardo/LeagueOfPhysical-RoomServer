@@ -3,7 +3,7 @@ import { CacheCrudRepository } from '@repositories/cacheCrudRepository';
 import { RoomDaoMongoose } from '@daos/room.dao.mongoose';
 import { RoomDaoRedis } from '@daos/room.dao.redis';
 
-export class RoomRepository extends CacheCrudRepository<Room, string> {
+export class RoomRepository extends CacheCrudRepository<Room> {
     constructor() {
         super(new RoomDaoMongoose(), new RoomDaoRedis());
     }
