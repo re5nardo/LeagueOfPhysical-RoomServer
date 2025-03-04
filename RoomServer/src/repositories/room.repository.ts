@@ -1,10 +1,10 @@
 import { Room } from '@interfaces/room.interface';
 import { CacheCrudRepository } from '@repositories/cacheCrudRepository';
-import { RoomDaoMongoose } from '@daos/room.dao.mongoose';
+import { RoomDaoPostgres } from '@daos/room.dao.postgres';
 import { RoomDaoRedis } from '@daos/room.dao.redis';
 
 export class RoomRepository extends CacheCrudRepository<Room> {
     constructor() {
-        super(new RoomDaoMongoose(), new RoomDaoRedis());
+        super(new RoomDaoPostgres(), new RoomDaoRedis());
     }
 }
