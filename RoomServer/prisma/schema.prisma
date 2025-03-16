@@ -30,9 +30,9 @@ enum RoomStatus {
 model Room {
   id            String      @id @unique
   matchId       String      @unique
-  createdAt     Int
+  createdAt     DateTime    @default(now())
   status        RoomStatus
   ip            String
   port          Int
-  lastHeartbeat Int
+  lastHeartbeat DateTime
 }

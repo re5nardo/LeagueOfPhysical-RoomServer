@@ -8,14 +8,17 @@ const roomSchema: Schema = new Schema({
         unique: true,
     },
     matchId: String,
-    createdAt: Number,
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
     status: {
         type: Number,
         enum: RoomStatus,
     },
     ip: String,
     port: Number,
-    lastHeartbeat: Number,
+    lastHeartbeat: Date,
 });
 
 const roomModel = model<Room & Document>('Room', roomSchema);

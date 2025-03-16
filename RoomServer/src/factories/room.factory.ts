@@ -10,11 +10,11 @@ export class RoomFactory {
         return {
             id: v4(),
             matchId: '',
-            createdAt: Date.now(),
+            createdAt: new Date(),
             status: RoomStatus.None,
             ip: '',
             port: 0,
-            lastHeartbeat: Date.now(),
+            lastHeartbeat: new Date(),
         };
     }
 }

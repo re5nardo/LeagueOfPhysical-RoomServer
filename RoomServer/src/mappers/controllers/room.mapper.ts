@@ -1,7 +1,7 @@
-import { Room } from "@interfaces/room.interface";
-import { RoomResponseDto, CreateRoomDto } from "@dtos/room.dto";
+import { Room } from '@interfaces/room.interface';
+import { RoomResponseDto, CreateRoomDto } from '@dtos/room.dto';
 import { RoomFactory } from '@factories/room.factory';
-import { MatchResponseDto } from "@dtos/match.dto";
+import { MatchResponseDto } from '@dtos/match.dto';
 
 export class RoomMapper {
     static CreateRoomDto = class {

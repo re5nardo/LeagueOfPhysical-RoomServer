@@ -28,9 +28,9 @@ export enum GameStatus {
 export interface Room {
     id: string;
     matchId: string;
-    createdAt: number;
+    createdAt: Date;
     status: RoomStatus;
     ip: string;
     port: number;
-    lastHeartbeat: number;
+    lastHeartbeat: Date;
 }

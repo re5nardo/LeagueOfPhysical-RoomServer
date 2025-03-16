@@ -1,11 +1,11 @@
-import { Room } from "@interfaces/room.interface";
+import { Room as RoomEntity } from '@prisma/client';
 import { DaoRedisBase } from '@daos/dao.redis.base';
 import { redisClient } from '@loaders/redis.loader';
 
 const TTL: number = 10;  //  sec
 const ROOM_PREFIX: string = 'ROOM_PREFIX';
 
-export class RoomDaoRedis extends DaoRedisBase<Room> {
+export class RoomDaoRedis extends DaoRedisBase<RoomEntity> {
 
     get Prefix() : string {
         return ROOM_PREFIX;

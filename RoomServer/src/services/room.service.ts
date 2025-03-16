@@ -8,7 +8,7 @@ import { RoomRepository } from '@repositories/room.repository';
 import { Room, RoomStatus } from '@interfaces/room.interface';
 import { Location, LocationDetail } from '@interfaces/user-location.interface';
 import { ResponseCode } from '@interfaces/responseCode.interface';
-import { RoomMapper } from "@mappers/room.mapper";
+import { RoomMapper } from "@mappers/controllers/room.mapper";
 import MatchService from "@services/match.service";
 import UserLocationService from '@services/user-location.service';
 import { k8sUtils } from '@utils/k8sUtils';
@@ -71,7 +71,7 @@ class RoomService {
                 };
             }
 
-            if (Date.now() - room.lastHeartbeat > RoomService.HEARTBEAT_THRESHOLD ) {
+            if (Date.now() - room.lastHeartbeat.getTime() > RoomService.HEARTBEAT_THRESHOLD ) {
                 room.status = RoomStatus.Error;
                 await this.roomRepository.save(room)
 
@@ -263,7 +263,7 @@ class RoomService {
         try {
             const room = await this.roomRepository.findById(roomId);
             if (room) {
-                room.lastHeartbeat = Date.now();
+                room.lastHeartbeat = new Date();
                 await this.roomRepository.save(room);
                 return {
                     code: ResponseCode.SUCCESS,
@@ -319,7 +319,7 @@ class RoomService {
     }
 
     private async shouldTerminateRoomRunner(room: Room): Promise<boolean> {
-        return Date.now() - room.lastHeartbeat > RoomService.HEARTBEAT_THRESHOLD
+        return Date.now() - room.lastHeartbeat.getTime() > RoomService.HEARTBEAT_THRESHOLD
             || room.status === RoomStatus.Error
             || room.status === RoomStatus.Closed;
     }
