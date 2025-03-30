@@ -57,7 +57,7 @@ class RoomService {
 
     public async isRoomJoinable(id: string): Promise<RoomJoinableResponseDto> {
         try {
-            const room = await this.roomRepository.findById(id);
+            let room = await this.roomRepository.findById(id);
             if (!room) {
                 return {
                     code: ResponseCode.ROOM_NOT_EXIST,
@@ -73,7 +73,7 @@ class RoomService {
 
             if (Date.now() - room.lastHeartbeat.getTime() > RoomService.HEARTBEAT_THRESHOLD ) {
                 room.status = RoomStatus.Error;
-                await this.roomRepository.save(room)
+                room = await this.roomRepository.save(room)
 
                 return {
                     code: ResponseCode.ROOM_NOT_JOINABLE,
@@ -108,12 +108,12 @@ class RoomService {
             
             //  room
             let room = RoomMapper.MatchResponseDto.toEntity(matchResponse.match);
-            await this.roomRepository.save(room);
+            room = await this.roomRepository.save(room);
 
             //  room-runner
             room = await this.createRoomRunner(room);
 
-            await this.roomRepository.save(room);
+            room = await this.roomRepository.save(room);
 
             return {
                 code: ResponseCode.SUCCESS,
@@ -128,7 +128,7 @@ class RoomService {
         try {
 
             room.status = RoomStatus.CreatingRunner;
-            await this.roomRepository.save(room);
+            room = await this.roomRepository.save(room);
 
             //  Pod
             const podManifest = {
@@ -156,7 +156,7 @@ class RoomService {
                 }
             };
 
-            await k8sUtils.createPod(podManifest);
+            const pod = await k8sUtils.createPod(podManifest);
 
             //  Service
             const serviceManifest = {
@@ -175,9 +175,9 @@ class RoomService {
                     ports: [{ port: 7777, targetPort: 7777, protocol: 'UDP' }]
                 }
             };
-
+            
+            const ip = /*await k8sUtils.getPublicIP(pod.metadata?.name)*/'localhost';
             const service = await k8sUtils.createService(serviceManifest);
-            const ip =  'localhost'; //service.spec?.clusterIP;
             const nodePort = service.spec?.ports?.[0]?.nodePort;
 
             if (ip && nodePort) {
@@ -188,7 +188,7 @@ class RoomService {
             }
             
             room.status = RoomStatus.RunnerCreated;
-            await this.roomRepository.save(room);
+            room = await this.roomRepository.save(room);
             return room;
         } catch (error) {
             return Promise.reject(error);
@@ -218,7 +218,7 @@ class RoomService {
 
     public async updateRoomStatus(updateRoomStatusDto: UpdateRoomStatusDto): Promise<UpdateRoomStatusResponseDto> {
         try {
-            const room = await this.roomRepository.findById(updateRoomStatusDto.roomId);
+            let room = await this.roomRepository.findById(updateRoomStatusDto.roomId);
             if (!room) {
                 return {
                     code: ResponseCode.ROOM_NOT_EXIST
@@ -248,7 +248,7 @@ class RoomService {
                 }
             }
             
-            await this.roomRepository.save(room);
+            room = await this.roomRepository.save(room);
 
             return {
                 code: ResponseCode.SUCCESS,
@@ -261,10 +261,10 @@ class RoomService {
 
     public async heartbeat(roomId: string): Promise<ResponseBase> {
         try {
-            const room = await this.roomRepository.findById(roomId);
+            let room = await this.roomRepository.findById(roomId);
             if (room) {
                 room.lastHeartbeat = new Date();
-                await this.roomRepository.save(room);
+                room = await this.roomRepository.save(room);
                 return {
                     code: ResponseCode.SUCCESS,
                 };
