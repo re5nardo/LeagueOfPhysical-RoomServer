@@ -38,26 +38,13 @@ export class RoomMapper implements DomainEntityMapper<Room, RoomEntity> {
 
     public getEntityFieldName<K extends keyof Room>(field: K): string {
         switch (field) {
-            case 'id':
-                return 'id';
-            case 'matchId':
-                return 'matchId';
-            case 'createdAt':
-                return 'createdAt';
-            case 'status':
-                return 'status';
-            case 'ip':
-                return 'ip';
-            case 'port':
-                return 'port';
-            case 'lastHeartbeat':
-                return 'lastHeartbeat';
-            default:
-                throw new Error(`Invalid field: ${field}`);
+            default: return field;
         }
     }
 
     public toEntityValue<K extends keyof Room>(field: K, value: Room[K]): any {
-        return value;
+        switch (field) {
+            default: return value;
+        }
     }
 }
