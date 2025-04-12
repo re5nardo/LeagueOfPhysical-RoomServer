@@ -1,9 +1,9 @@
-import { MatchType } from '@interfaces/match.interface';
+import { GameMode } from '@interfaces/enums';
 import { ResponseBase } from '@interfaces/responseBase.interface';
 
 export class MatchResponseDto {
     public id: string;
-    public matchType: MatchType;
+    public matchType: GameMode;
     public subGameId: string;
     public mapId: string;
     public targetRating: number;
