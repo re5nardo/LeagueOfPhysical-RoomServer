@@ -21,3 +21,5 @@ spec:
         envFrom:
         - configMapRef:
             name: room-server-config
+        - secretRef:
+            name: postgres-secret
